@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Domain", "src/NiaLando.Domain/NiaLando.Domain.csproj", "{E53BF0E7-4013-4DBA-9923-BF28C0C56F7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Simulation", "src/NiaLando.Simulation/NiaLando.Simulation.csproj", "{DCD41011-CB84-400A-A6CB-7B8022A171B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Application", "src/NiaLando.Application/NiaLando.Application.csproj", "{A9268234-B8B4-4DB0-BC85-EC53828DC78D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Cli", "src/NiaLando.Cli/NiaLando.Cli.csproj", "{DF5F6806-1269-4808-B6CC-6D9A1CD93435}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Domain.Tests", "tests/NiaLando.Domain.Tests/NiaLando.Domain.Tests.csproj", "{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaLando.Simulation.Tests", "tests/NiaLando.Simulation.Tests/NiaLando.Simulation.Tests.csproj", "{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E53BF0E7-4013-4DBA-9923-BF28C0C56F7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E53BF0E7-4013-4DBA-9923-BF28C0C56F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E53BF0E7-4013-4DBA-9923-BF28C0C56F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E53BF0E7-4013-4DBA-9923-BF28C0C56F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCD41011-CB84-400A-A6CB-7B8022A171B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCD41011-CB84-400A-A6CB-7B8022A171B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCD41011-CB84-400A-A6CB-7B8022A171B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCD41011-CB84-400A-A6CB-7B8022A171B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9268234-B8B4-4DB0-BC85-EC53828DC78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9268234-B8B4-4DB0-BC85-EC53828DC78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9268234-B8B4-4DB0-BC85-EC53828DC78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9268234-B8B4-4DB0-BC85-EC53828DC78D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF5F6806-1269-4808-B6CC-6D9A1CD93435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF5F6806-1269-4808-B6CC-6D9A1CD93435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF5F6806-1269-4808-B6CC-6D9A1CD93435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF5F6806-1269-4808-B6CC-6D9A1CD93435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0803CD80-241E-4EA1-A2F6-D7A0BAB5A0DF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{4D7E2FC2-8479-45A1-85C7-91EAB230C9E8} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+EndGlobal

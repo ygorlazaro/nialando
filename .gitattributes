@@ -1,0 +1,22 @@
+# Normalize line endings
+* text=auto
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg binary
+*.webp binary
+*.tscn binary
+*.tres binary
+*.import binary
+*.otex binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.fbx binary
+*.blend binary
+
+# Godot scenes/resources - keep LF (Git will convert on commit)
+*.tscn text eol=lf
+*.tres text eol=lf

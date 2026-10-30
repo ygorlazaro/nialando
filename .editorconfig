@@ -1,0 +1,38 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+[*.cs]
+dotnet_sort_system_directives = true
+dotnet_separate_import_directive_regions = true
+dotnet_style_qualification_for_field = false
+dotnet_style_qualification_for_method = false
+dotnet_style_qualification_for_property = false
+dotnet_style_namespace_prefix = false
+dotnet_style_prefer_inlined_anonymous_function = true
+dotnet_style_prefer_auto_properties = true
+dotnet_style_prefer_simplified_boolean_expression = true
+dotnet_style_prefer_simplified_interpolation = true
+dotnet_style_throw_exception = false
+dotnet_style_throw_exception_prefer_exception_object = false
+dotnet_style_prefer_null_check_over_type_check = true
+dotnet_style_explicit_arguments = true
+dotnet_analyzer_use_separate_spaces = true
+dotnet_new_line_before_open_brace = true
+dotnet_sort_using_directive = true
+
+[*.csproj]
+indent_size = 2
+
+[*.yml]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

@@ -1,0 +1,36 @@
+# Godot
+.godot/
+godot_mono_build/
+*.import
+*.translation.rej
+*.tscn.rej
+
+# .NET / build
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vs/
+*.nupkg
+*.nuspec
+.nuget/
+
+# Test / coverage
+.coverage
+TestResults/
+coverage/
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+.vscode-oss/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tools
+tools/
