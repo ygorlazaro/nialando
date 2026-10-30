@@ -9,3 +9,10 @@ public sealed class Country
     public EntityId DominantPeopleId { get; set; }
     public long Treasury { get; set; }
 }
+
+public sealed class Building
+{
+    public string Type { get; set; } = string.Empty;
+    public EntityId ProvinceId { get; set; }
+    public int Level { get; set; } = 1;
+}

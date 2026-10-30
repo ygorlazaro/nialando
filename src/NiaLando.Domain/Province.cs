@@ -15,3 +15,11 @@ public sealed class Province
     public List<EntityId> AdjacentProvinceIds { get; set; } = new();
     public List<ProvincePopulation> Populations { get; set; } = new();
 }
+
+public sealed class ProvinceEconomy
+{
+    public EntityId ProvinceId { get; set; }
+    public int Tax { get; set; } = 10;
+    public int Production { get; set; } = 5;
+    public int Trade { get; set; } = 3;
+}

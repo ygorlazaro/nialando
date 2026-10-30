@@ -8,12 +8,14 @@ namespace NiaLando.Simulation;
 public sealed class TurnProcessor
 {
     private int _messageIdCounter = 1;
+    private readonly EconomyProcessor _economy = new();
+    private readonly RecruitmentProcessor _recruitment = new();
     
     public GameState EndTurn(GameState state)
     {
         // Fases fixas e determinísticas
-        state = ProcessEconomy(state);
-        state = ProcessRecruitment(state);
+        state = _economy.Process(state);
+        state = _recruitment.Process(state);
         state = ProcessDiplomacy(state);
         state = ProcessMovement(state);
         state = ProcessBattles(state);
@@ -28,16 +30,6 @@ public sealed class TurnProcessor
         return state;
     }
     
-    private GameState ProcessEconomy(GameState state)
-    {
-        foreach (var country in state.Countries)
-        {
-            country.Treasury += 100; // Renda básica
-        }
-        return state;
-    }
-    
-    private GameState ProcessRecruitment(GameState state) => state;
     private GameState ProcessDiplomacy(GameState state) => state;
     private GameState ProcessMovement(GameState state) => state;
     private GameState ProcessBattles(GameState state) => state;
@@ -45,7 +37,6 @@ public sealed class TurnProcessor
     
     private GameState ProcessPeople(GameState state)
     {
-        // Gerar mensagem de exemplo
         if (state.Countries.Count > 0)
         {
             state.Messages.Add(new Message
