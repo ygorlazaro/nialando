@@ -53,4 +53,10 @@ public sealed class GameState
 
     /// <summary>Guerras ativas.</summary>
     public List<War> Wars { get; set; } = new();
+
+    /// <summary>Tratados ativos.</summary>
+    public List<Treaty> Treaties { get; set; } = new();
+
+    /// <summary>Propostas pendentes ao jogador (cartas lacradas).</summary>
+    public List<PendingProposal> PendingProposals { get; set; } = new();
 }

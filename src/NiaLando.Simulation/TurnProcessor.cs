@@ -11,12 +11,13 @@ public sealed class TurnProcessor
     private readonly EconomyProcessor _economy = new();
     private readonly RecruitmentProcessor _recruitment = new();
     private readonly CombatProcessor _combat = new();
+    private readonly DiplomacyProcessor _diplomacy = new();
     
     public GameState EndTurn(GameState state)
     {
         state = _economy.Process(state);
         state = _recruitment.Process(state);
-        state = ProcessDiplomacy(state);
+        state = _diplomacy.Process(state);
         state = ProcessMovement(state);
         state = _combat.Process(state);
         state = ProcessPeace(state);
@@ -30,7 +31,6 @@ public sealed class TurnProcessor
         return state;
     }
     
-    private GameState ProcessDiplomacy(GameState state) => state;
     private GameState ProcessMovement(GameState state) => state;
     private GameState ProcessPeace(GameState state) => state;
     
@@ -42,9 +42,9 @@ public sealed class TurnProcessor
             {
                 Id = _messageIdCounter++,
                 Turn = state.CurrentTurn + 1,
-                Category = "war",
+                Category = "diplomacy",
                 Importance = 2,
-                Key = "msg.turn.war",
+                Key = "msg.turn.diplomacy",
                 Parameters = new Dictionary<string, string>(),
                 InvolvedEntities = new List<EntityId>(),
                 IsRead = false,
