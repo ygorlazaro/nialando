@@ -1,6 +1,5 @@
 using Godot;
 using NiaLando.Application;
-using NiaLando.Domain;
 
 namespace NiaLando.Game.UI;
 
@@ -14,6 +13,7 @@ public partial class GameUI : Control
 
     public override void _Ready()
     {
+        GD.Print("=== GameUI._Ready ===");
         _turnLabel = GetNode<Label>("TopBar/TurnLabel");
         _endTurnButton = GetNode<Button>("TopBar/EndTurnButton");
         _messageLabel = GetNode<Label>("MessagePanel/MessageLabel");
@@ -24,6 +24,7 @@ public partial class GameUI : Control
         
         _endTurnButton!.Pressed += OnEndTurnPressed;
         UpdateUI();
+        GD.Print("=== GameUI._Ready END ===");
     }
 
     private void OnEndTurnPressed()
@@ -43,7 +44,7 @@ public partial class GameUI : Control
         _turnLabel.Text = $"Turno: {_session.State.CurrentTurn} | Ano: {_session.State.CurrentYear}";
     }
 
-    public void ShowProvince(Province? province)
+    public void ShowProvince(NiaLando.Domain.Province? province)
     {
         if (_provinceLabel == null) return;
         if (province == null)
