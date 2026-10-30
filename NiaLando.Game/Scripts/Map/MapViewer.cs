@@ -8,22 +8,23 @@ public partial class MapViewer : Node2D
 {
     public override void _Ready()
     {
-        GD.Print("MAPVIEWER START");
         var sprite = GetNode<Sprite2D>("MapSprite");
         var generator = new MapGenerator();
         var setup = new SetupGenerator();
         var state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         state = setup.Setup(state, 8);
-        GD.Print($"GOT {state.Map.Provinces.Count} PROVS");
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
-        for (int i = 0; i < 512*512; i++)
+        for (int y = 0; y < 512; y++)
         {
-            ushort provId = state.Map.ProvinceIdRaster[i];
-            image.SetPixel(i % 512, i / 512, provId == 0 ? Colors.Blue : Colors.Green);
+            for (int x = 0; x < 512; x++)
+            {
+                if (state.Map.ProvinceIdRaster[y * 512 + x] == 0)
+                    image.SetPixel(x, y, new Color(0, 0, 1));
+                else
+                    image.SetPixel(x, y, new Color(0, 1, 0));
+            }
         }
         var tex = ImageTexture.CreateFromImage(image);
         sprite.Texture = tex;
-        sprite.Visible = true;
-        GD.Print("MAPVIEWER END");
     }
 }
