@@ -22,23 +22,26 @@ public partial class MapViewer : Node2D
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
         
+        GD.Print($"Provincias geradas: {_state.Map.Provinces.Count}, Raster size: {_state.Map.ProvinceIdRaster.Length}");
+        
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
         for (int y = 0; y < 512; y++)
         {
             for (int x = 0; x < 512; x++)
             {
                 int idx = y * 512 + x;
-                ushort provId = _state.Map.ProvinceIdRaster.Length > idx ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
+                ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.2f, 0.4f, 0.6f));
+                    image.SetPixel(x, y, new Color(0.15f, 0.35f, 0.65f)); // oceano
                 else
-                    image.SetPixel(x, y, new Color(0.7f, 0.85f, 0.5f));
+                    image.SetPixel(x, y, new Color(0.65f, 0.75f, 0.45f)); // terra
             }
         }
-        var texture = ImageTexture.CreateFromImage(image);
+        var texture = new ImageTexture();
+        texture.SetImage(image);
         _mapSprite.Texture = texture;
         _mapSprite.Position = new Vector2(512, 512);
-        _mapSprite.Scale = new Vector2(1, 1);
+        _mapSprite.Centered = true;
     }
 
     public override void _Input(InputEvent @event)
@@ -50,10 +53,10 @@ public partial class MapViewer : Node2D
                 cam.Zoom *= 1.1f;
             else if (mb.ButtonIndex == MouseButton.WheelDown)
                 cam.Zoom *= 0.9f;
-            else if (mb.ButtonIndex == MouseButton.Left)
+            else if (mb.ButtonIndex == MouseButton.Left && _mapSprite != null && _mapSprite.Texture != null)
             {
                 var mousePos = GetGlobalMousePosition();
-                var localPos = mousePos - _mapSprite!.Position + new Vector2(256, 256);
+                var localPos = mousePos - _mapSprite.Position + new Vector2(256, 256);
                 int x = (int)Mathf.Clamp(localPos.X, 0, 511);
                 int y = (int)Mathf.Clamp(localPos.Y, 0, 511);
                 if (_state != null && _state.Map.ProvinceIdRaster.Length > y * 512 + x)
