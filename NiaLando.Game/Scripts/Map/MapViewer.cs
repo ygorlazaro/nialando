@@ -29,23 +29,15 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.0f, 0.4f, 0.9f));
+                    image.SetPixel(x, y, new Color(0.1f, 0.45f, 0.85f));
                 else
-                    image.SetPixel(x, y, new Color(0.6f, 0.85f, 0.35f));
+                    image.SetPixel(x, y, new Color(0.65f, 0.85f, 0.4f));
             }
         }
-        var tex = new ImageTexture();
-        tex.SetImage(image);
+        var tex = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = tex;
         _mapSprite.Centered = true;
-        GD.Print($"[MapViewer] Ready - provinces:{_state.Map.Provinces.Count} ocean:{CountOcean()} land:{512*512 - CountOcean()}");
-    }
-    
-    private int CountOcean()
-    {
-        int c = 0;
-        for (int i = 0; i < _state.Map.ProvinceIdRaster.Length; i++) if (_state.Map.ProvinceIdRaster[i] == 0) c++;
-        return c;
+        _mapSprite.Scale = new Vector2(1, 1);
     }
 
     public override void _Input(InputEvent @event)
