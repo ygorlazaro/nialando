@@ -13,8 +13,13 @@ public partial class MapViewer : Node2D
 
     public override void _Ready()
     {
-        _mapSprite = new Sprite2D();
-        AddChild(_mapSprite);
+        _mapSprite = GetNode<Sprite2D>("MapSprite");
+        if (_mapSprite == null)
+        {
+            _mapSprite = new Sprite2D();
+            _mapSprite.Name = "MapSprite";
+            AddChild(_mapSprite);
+        }
         _gameUI = GetParent().GetNode<GameUI>("CanvasLayer/GameUI");
         
         var generator = new MapGenerator();
@@ -32,16 +37,15 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.15f, 0.35f, 0.65f)); // oceano
+                    image.SetPixel(x, y, new Color(0.1f, 0.3f, 0.7f));
                 else
-                    image.SetPixel(x, y, new Color(0.65f, 0.75f, 0.45f)); // terra
+                    image.SetPixel(x, y, new Color(0.7f, 0.8f, 0.4f));
             }
         }
-        var texture = new ImageTexture();
-        texture.SetImage(image);
+        var texture = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = texture;
-        _mapSprite.Position = new Vector2(512, 512);
-        _mapSprite.Centered = true;
+        _mapSprite.Position = new Vector2(0, 0);
+        _mapSprite.Centered = false;
     }
 
     public override void _Input(InputEvent @event)
@@ -56,7 +60,7 @@ public partial class MapViewer : Node2D
             else if (mb.ButtonIndex == MouseButton.Left && _mapSprite != null && _mapSprite.Texture != null)
             {
                 var mousePos = GetGlobalMousePosition();
-                var localPos = mousePos - _mapSprite.Position + new Vector2(256, 256);
+                var localPos = mousePos - _mapSprite.GlobalPosition;
                 int x = (int)Mathf.Clamp(localPos.X, 0, 511);
                 int y = (int)Mathf.Clamp(localPos.Y, 0, 511);
                 if (_state != null && _state.Map.ProvinceIdRaster.Length > y * 512 + x)
