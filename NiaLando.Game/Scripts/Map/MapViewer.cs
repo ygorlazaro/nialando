@@ -21,7 +21,8 @@ public partial class MapViewer : Node2D
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
         
-        var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
+        var image = new Image();
+        image.CopyFrom(Image.CreateEmpty(512, 512, false, Image.Format.Rgb8));
         for (int y = 0; y < 512; y++)
         {
             for (int x = 0; x < 512; x++)
@@ -29,12 +30,13 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.1f, 0.4f, 0.8f));
+                    image.SetPixel(x, y, new Color(0.0f, 0.3f, 0.8f));
                 else
-                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.3f));
+                    image.SetPixel(x, y, new Color(0.5f, 0.8f, 0.3f));
             }
         }
-        var tex = ImageTexture.CreateFromImage(image);
+        var tex = new ImageTexture();
+        tex.SetImage(image);
         _mapSprite.Texture = tex;
         _mapSprite.Centered = true;
     }
@@ -44,10 +46,8 @@ public partial class MapViewer : Node2D
         if (@event is InputEventMouseButton mb && mb.Pressed)
         {
             var cam = GetParent().GetNode<Camera2D>("Camera2D");
-            if (mb.ButtonIndex == MouseButton.WheelUp)
-                cam.Zoom *= 1.1f;
-            else if (mb.ButtonIndex == MouseButton.WheelDown)
-                cam.Zoom *= 0.9f;
+            if (mb.ButtonIndex == MouseButton.WheelUp) cam.Zoom *= 1.1f;
+            else if (mb.ButtonIndex == MouseButton.WheelDown) cam.Zoom *= 0.9f;
             else if (mb.ButtonIndex == MouseButton.Left)
             {
                 var mousePos = GetGlobalMousePosition();
