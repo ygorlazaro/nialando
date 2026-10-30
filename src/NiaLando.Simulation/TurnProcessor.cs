@@ -10,15 +10,15 @@ public sealed class TurnProcessor
     private int _messageIdCounter = 1;
     private readonly EconomyProcessor _economy = new();
     private readonly RecruitmentProcessor _recruitment = new();
+    private readonly CombatProcessor _combat = new();
     
     public GameState EndTurn(GameState state)
     {
-        // Fases fixas e determinísticas
         state = _economy.Process(state);
         state = _recruitment.Process(state);
         state = ProcessDiplomacy(state);
         state = ProcessMovement(state);
-        state = ProcessBattles(state);
+        state = _combat.Process(state);
         state = ProcessPeace(state);
         state = ProcessPeople(state);
         state = ProcessEvents(state);
@@ -32,7 +32,6 @@ public sealed class TurnProcessor
     
     private GameState ProcessDiplomacy(GameState state) => state;
     private GameState ProcessMovement(GameState state) => state;
-    private GameState ProcessBattles(GameState state) => state;
     private GameState ProcessPeace(GameState state) => state;
     
     private GameState ProcessPeople(GameState state)
@@ -43,11 +42,11 @@ public sealed class TurnProcessor
             {
                 Id = _messageIdCounter++,
                 Turn = state.CurrentTurn + 1,
-                Category = "economy",
-                Importance = 1,
-                Key = "msg.turn.economy",
-                Parameters = new Dictionary<string, string> { { "amount", "100" } },
-                InvolvedEntities = new List<EntityId> { state.Countries[0].Id },
+                Category = "war",
+                Importance = 2,
+                Key = "msg.turn.war",
+                Parameters = new Dictionary<string, string>(),
+                InvolvedEntities = new List<EntityId>(),
                 IsRead = false,
                 RequiresDecision = false
             });

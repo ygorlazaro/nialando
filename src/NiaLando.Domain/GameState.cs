@@ -50,4 +50,7 @@ public sealed class GameState
 
     /// <summary>Frotas ativas.</summary>
     public List<Fleet> Fleets { get; set; } = new();
+
+    /// <summary>Guerras ativas.</summary>
+    public List<War> Wars { get; set; } = new();
 }
