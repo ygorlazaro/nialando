@@ -12,5 +12,7 @@ public sealed class MapParams
     public int OctavasRuido { get; init; } = 5;
     public int NumProvinciasAlvo { get; init; } = 1000;
     public int MinTamanhoRio { get; init; } = 5;
+    public int Width { get; init; } = 512;
+    public int Height { get; init; } = 512;
     public long Seed { get; init; } = 0;
 }

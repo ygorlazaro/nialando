@@ -129,24 +129,118 @@ public class MapGeneratorTests
     }
 
     [Fact]
-    public void Ports_AdjacentToWater()
+    public void Adjacencies_DeclaredExistInRaster()
     {
         var gen = new MapGenerator();
-        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45 });
-        foreach (var prov in state.Map.Provinces.Where(p => p.HasPort))
+        var state = gen.Generate(new MapParams { Seed = 777, NumProvinciasAlvo = 150, PorcentagemTerra = 0.45 });
+        int width = state.Map.Width;
+        int height = state.Map.Height;
+        var raster = state.Map.ProvinceIdRaster;
+
+        foreach (var prov in state.Map.Provinces)
         {
-            bool hasWaterNeighbor = false;
-            // Verificar se tem vizinho com ID 0 no raster
-            hasWaterNeighbor.Should().BeTrue();
+            foreach (var adjId in prov.AdjacentProvinceIds)
+            {
+                bool found = false;
+                for (int y = 0; y < height && !found; y++)
+                {
+                    for (int x = 0; x < width && !found; x++)
+                    {
+                        if (raster[y * width + x] == prov.Id.Value)
+                        {
+                            if ((x > 0 && raster[y * width + x - 1] == adjId.Value) ||
+                                (x < width - 1 && raster[y * width + x + 1] == adjId.Value) ||
+                                (y > 0 && raster[(y - 1) * width + x] == adjId.Value) ||
+                                (y < height - 1 && raster[(y + 1) * width + x] == adjId.Value))
+                                found = true;
+                        }
+                    }
+                }
+                found.Should().BeTrue($"Província {prov.Id.Value} não faz fronteira raster com {adjId.Value}");
+            }
         }
     }
 
     [Fact]
-    public void HitTest_CenterOfProvince()
+    public void Adjacencies_AllRasterBoundariesDeclared()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 777, NumProvinciasAlvo = 150, PorcentagemTerra = 0.45 });
+        int width = state.Map.Width;
+        int height = state.Map.Height;
+        var raster = state.Map.ProvinceIdRaster;
+        var adj = state.Map.Provinces.ToDictionary(p => p.Id.Value, p => p.AdjacentProvinceIds.Select(a => a.Value).ToHashSet());
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                ushort cur = raster[y * width + x];
+                if (cur == 0) continue;
+                ushort left = x > 0 ? raster[y * width + x - 1] : (ushort)0;
+                ushort right = x < width - 1 ? raster[y * width + x + 1] : (ushort)0;
+                ushort up = y > 0 ? raster[(y - 1) * width + x] : (ushort)0;
+                ushort down = y < height - 1 ? raster[(y + 1) * width + x] : (ushort)0;
+                foreach (var nb in new ushort[] { left, right, up, down })
+                {
+                    if (nb == 0 || nb == cur) continue;
+                    adj[cur].Should().Contain(nb, $"fronteira raster {cur}-{nb} não declarada");
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void Ports_AdjacentToWater()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45 });
+        int width = state.Map.Width;
+        int height = state.Map.Height;
+        var raster = state.Map.ProvinceIdRaster;
+
+        foreach (var prov in state.Map.Provinces)
+        {
+            bool hasWater = false;
+            for (int y = 0; y < height && !hasWater; y++)
+            {
+                for (int x = 0; x < width && !hasWater; x++)
+                {
+                    if (raster[y * width + x] == prov.Id.Value)
+                    {
+                        if ((x > 0 && raster[y * width + x - 1] == 0) ||
+                            (x < width - 1 && raster[y * width + x + 1] == 0) ||
+                            (y > 0 && raster[(y - 1) * width + x] == 0) ||
+                            (y < height - 1 && raster[(y + 1) * width + x] == 0))
+                            hasWater = true;
+                    }
+                }
+            }
+            prov.HasPort.Should().Be(hasWater, $"província {prov.Id.Value}: HasPort={prov.HasPort}, temVizinhaMaritima={hasWater}");
+        }
+    }
+
+    [Fact]
+    public void HitTest_CenterOfProvince_ReturnsProvinceId()
     {
         var gen = new MapGenerator();
         var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 100, PorcentagemTerra = 0.45 });
-        state.Map.ProvinceIdRaster.Should().NotBeEmpty();
+        int width = state.Map.Width;
+        int height = state.Map.Height;
+        var raster = state.Map.ProvinceIdRaster;
+
+        foreach (var prov in state.Map.Provinces)
+        {
+            long sx = 0, sy = 0;
+            int count = 0;
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    if (raster[y * width + x] == prov.Id.Value) { sx += x; sy += y; count++; }
+            if (count == 0) continue;
+            int cx = Math.Clamp((int)Math.Round((double)sx / count), 0, width - 1);
+            int cy = Math.Clamp((int)Math.Round((double)sy / count), 0, height - 1);
+            raster[cy * width + cx].Should().Be((ushort)prov.Id.Value, $"pixel central da província {prov.Id.Value}");
+        }
     }
 }
 
