@@ -67,3 +67,7 @@ godot --path NiaLando.Game
 - [ADR-0002](doc/adr/ADR-0002.md) — i18n (mensagens como dados estruturados).
 - [ADR-0003](doc/adr/ADR-0003.md) — Godot como camada de apresentação e simulação independente.
 - [ADR-0004](doc/adr/ADR-0004.md) — Determinismo entre plataformas (sem trigonometria na Simulation, golden hashes).
+## Fases completadas
+- R0-F9: Arquitetura Godot+C#, PRNG determinístico, gerador de mapa, setup, turnos, economia/guerra/diplomacia/povos/naval
+- Modo headless: `dotnet run --project src/NiaLando.Cli -- --seed 1234 --turns 200 --out report.json`
+
