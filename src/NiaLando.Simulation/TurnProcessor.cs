@@ -7,6 +7,7 @@ public sealed class TurnProcessor
 {
     private readonly EconomyProcessor _economy = new();
     private readonly RecruitmentProcessor _recruitment = new();
+    private readonly NavalProcessor _naval = new();
     private readonly CombatProcessor _combat = new();
     private readonly DiplomacyProcessor _diplomacy = new();
     private readonly PeopleProcessor _peopleProc = new();
@@ -15,6 +16,7 @@ public sealed class TurnProcessor
     {
         state = _economy.Process(state);
         state = _recruitment.Process(state);
+        state = _naval.Process(state);
         state = _diplomacy.Process(state);
         state = ProcessMovement(state);
         state = _combat.Process(state);
