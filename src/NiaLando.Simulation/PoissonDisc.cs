@@ -14,7 +14,8 @@ public static class PoissonDisc
         var points = new List<(double X, double Y)>();
         var active = new List<int>();
         
-        // Primeira amostra
+        if (width <= 0 || height <= 0 || minDistance <= 0) return points;
+        
         double firstX = rng.NextDouble() * width;
         double firstY = rng.NextDouble() * height;
         points.Add((firstX, firstY));
@@ -29,9 +30,6 @@ public static class PoissonDisc
             
             for (int i = 0; i < maxSamples; i++)
             {
-                // Amostra uniforme em anel: usa coordenadas cartesianas com rejeição (sem sin/cos)
-                double angle = rng.NextDouble() * 2.0; // fator arbitrário, não usar Math.PI
-                // Simplificado: usar distribuição uniforme em quadrado transformada
                 double radius = minDistance + rng.NextDouble() * minDistance;
                 double px = current.X + (rng.NextDouble() - 0.5) * 2.0 * radius;
                 double py = current.Y + (rng.NextDouble() - 0.5) * 2.0 * radius;
