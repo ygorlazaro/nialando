@@ -8,12 +8,8 @@ public partial class MapViewer : Node2D
 {
     public override void _Ready()
     {
-        CallDeferred(nameof(GenerateMap));
-    }
-    
-    private void GenerateMap()
-    {
-        var sprite = GetNode<Sprite2D>("MapSprite");
+        var sprite = new Sprite2D();
+        AddChild(sprite);
         var generator = new MapGenerator();
         var state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
@@ -27,9 +23,8 @@ public partial class MapViewer : Node2D
                     image.SetPixel(x, y, new Color(0, 1, 0));
             }
         }
-        var tex = ImageTexture.CreateFromImage(image);
-        sprite.Texture = tex;
+        sprite.Texture = ImageTexture.CreateFromImage(image);
         sprite.Centered = true;
-        sprite.Visible = true;
+        sprite.Position = new Vector2(256, 256);
     }
 }
