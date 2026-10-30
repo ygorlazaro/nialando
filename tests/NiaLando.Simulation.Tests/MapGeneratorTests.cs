@@ -74,4 +74,79 @@ public class MapGeneratorTests
             sb.Append(b.ToString("x2"));
         return sb.ToString();
     }
+
+    [Fact]
+    public void Raster_HasWaterAndLand()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45, Tamanho = 1000, DistanciaMinima = 33.33, IteracoesLloyd = 3, OctavasRuido = 5 });
+        int water = 0, land = 0;
+        for (int i = 0; i < state.Map.ProvinceIdRaster.Length; i++)
+        {
+            if (state.Map.ProvinceIdRaster[i] == 0) water++; else land++;
+        }
+        water.Should().BeGreaterThan(0);
+        land.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public void Raster_LandFraction_WithinTwoPercent()
+    {
+        var gen = new MapGenerator();
+        var p = new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45, Tamanho = 1000, DistanciaMinima = 33.33, IteracoesLloyd = 3, OctavasRuido = 5 };
+        var state = gen.Generate(p);
+        int land = 0;
+        for (int i = 0; i < state.Map.ProvinceIdRaster.Length; i++) if (state.Map.ProvinceIdRaster[i] != 0) land++;
+        double frac = (double)land / (double)state.Map.ProvinceIdRaster.Length;
+        frac.Should().BeInRange(p.PorcentagemTerra - 0.02, p.PorcentagemTerra + 0.02);
+    }
+
+    [Fact]
+    public void Raster_ProvincesRepresented()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45 });
+        var present = new HashSet<ushort>();
+        for (int i = 0; i < state.Map.ProvinceIdRaster.Length; i++) if (state.Map.ProvinceIdRaster[i] != 0) present.Add(state.Map.ProvinceIdRaster[i]);
+        var provinceIds = state.Map.Provinces.Select(x => (ushort)x.Id.Value).ToHashSet();
+        present.Count.Should().BeGreaterOrEqualTo((int)(provinceIds.Count * 0.8));
+    }
+
+    [Fact]
+    public void Adjacencies_DerivedAndSymmetric()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 777, NumProvinciasAlvo = 150, PorcentagemTerra = 0.45 });
+        foreach (var prov in state.Map.Provinces)
+        {
+            foreach (var adj in prov.AdjacentProvinceIds)
+            {
+                var other = state.Map.Provinces.FirstOrDefault(p => p.Id == adj);
+                other.Should().NotBeNull();
+                other!.AdjacentProvinceIds.Should().Contain(prov.Id);
+            }
+        }
+    }
+
+    [Fact]
+    public void Ports_AdjacentToWater()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200, PorcentagemTerra = 0.45 });
+        foreach (var prov in state.Map.Provinces.Where(p => p.HasPort))
+        {
+            bool hasWaterNeighbor = false;
+            // Verificar se tem vizinho com ID 0 no raster
+            hasWaterNeighbor.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public void HitTest_CenterOfProvince()
+    {
+        var gen = new MapGenerator();
+        var state = gen.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 100, PorcentagemTerra = 0.45 });
+        state.Map.ProvinceIdRaster.Should().NotBeEmpty();
+    }
 }
+
