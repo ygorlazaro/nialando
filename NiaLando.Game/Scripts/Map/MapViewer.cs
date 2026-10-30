@@ -32,12 +32,13 @@ public partial class MapViewer : Node2D
                 if (provId == 0)
                     image.SetPixel(x, y, new Color(0.2f, 0.4f, 0.6f));
                 else
-                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.4f));
+                    image.SetPixel(x, y, new Color(0.7f, 0.85f, 0.5f));
             }
         }
         var texture = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = texture;
         _mapSprite.Position = new Vector2(512, 512);
+        _mapSprite.Scale = new Vector2(1, 1);
     }
 
     public override void _Input(InputEvent @event)
@@ -51,14 +52,18 @@ public partial class MapViewer : Node2D
                 cam.Zoom *= 0.9f;
             else if (mb.ButtonIndex == MouseButton.Left)
             {
-                // Hit testing simples
                 var mousePos = GetGlobalMousePosition();
-                var localPos = (mousePos - _mapSprite!.Position + new Vector2(256, 256));
+                var localPos = mousePos - _mapSprite!.Position + new Vector2(256, 256);
                 int x = (int)Mathf.Clamp(localPos.X, 0, 511);
                 int y = (int)Mathf.Clamp(localPos.Y, 0, 511);
                 if (_state != null && _state.Map.ProvinceIdRaster.Length > y * 512 + x)
                 {
                     ushort provId = _state.Map.ProvinceIdRaster[y * 512 + x];
+                    if (provId == 0)
+                    {
+                        _gameUI?.ShowProvince(null);
+                        return;
+                    }
                     var province = _state.Map.Provinces.Find(p => p.Id.Value == provId);
                     _gameUI?.ShowProvince(province);
                 }
