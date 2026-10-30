@@ -14,20 +14,20 @@ public partial class MapViewer : Node2D
     public override void _Ready()
     {
         _mapSprite = GetNode<Sprite2D>("MapSprite");
-        _gameUI = GetParent().GetNode<GameUI>("CanvasLayer/GameUI");
+        _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
         
         var generator = new MapGenerator();
         var setup = new SetupGenerator();
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
         
-        GD.Print($"[MapViewer] Provincias: {_state.Map.Provinces.Count}, Raster: {_state.Map.ProvinceIdRaster.Length}");
+        GD.Print($"[MapViewer] Provincias: {_state.Map.Provinces.Count}");
         int ocean = 0, land = 0;
         for (int i = 0; i < _state.Map.ProvinceIdRaster.Length; i++)
         {
             if (_state.Map.ProvinceIdRaster[i] == 0) ocean++; else land++;
         }
-        GD.Print($"[MapViewer] Pixels - Ocean: {ocean}, Land: {land}");
+        GD.Print($"[MapViewer] Ocean:{ocean} Land:{land}");
         
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
         for (int y = 0; y < 512; y++)
@@ -37,17 +37,15 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.12f, 0.32f, 0.72f));
+                    image.SetPixel(x, y, new Color(0.1f, 0.4f, 0.8f));
                 else
-                    image.SetPixel(x, y, new Color(0.68f, 0.78f, 0.42f));
+                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.3f));
             }
         }
         var texture = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = texture;
-        _mapSprite.Position = new Vector2(256, 256);
-        _mapSprite.Centered = true;
         _mapSprite.Visible = true;
-        _mapSprite.ZIndex = 0;
+        _mapSprite.Modulate = Colors.White;
     }
 
     public override void _Input(InputEvent @event)
