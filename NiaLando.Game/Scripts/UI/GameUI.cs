@@ -9,22 +9,18 @@ public partial class GameUI : Control
     private Label? _turnLabel;
     private Button? _endTurnButton;
     private Label? _messageLabel;
-    private Label? _provinceLabel;
 
     public override void _Ready()
     {
-        GD.Print("=== GameUI._Ready ===");
         _turnLabel = GetNode<Label>("TopBar/TurnLabel");
         _endTurnButton = GetNode<Button>("TopBar/EndTurnButton");
         _messageLabel = GetNode<Label>("MessagePanel/MessageLabel");
-        _provinceLabel = GetNode<Label>("ProvincePanel/ProvinceLabel");
         
         _session = new GameSession();
         _session.NewGame();
         
         _endTurnButton!.Pressed += OnEndTurnPressed;
         UpdateUI();
-        GD.Print("=== GameUI._Ready END ===");
     }
 
     private void OnEndTurnPressed()
@@ -42,14 +38,5 @@ public partial class GameUI : Control
     {
         if (_session == null || _turnLabel == null) return;
         _turnLabel.Text = $"Turno: {_session.State.CurrentTurn} | Ano: {_session.State.CurrentYear}";
-    }
-
-    public void ShowProvince(NiaLando.Domain.Province? province)
-    {
-        if (_provinceLabel == null) return;
-        if (province == null)
-            _provinceLabel.Text = "Província: -";
-        else
-            _provinceLabel.Text = $"Província: {province.Name}\nTerreno: {province.Terrain}\nDesenvolvimento: {province.Development}\nDono: {(province.OwnerId?.Value.ToString() ?? "-")}";
     }
 }
