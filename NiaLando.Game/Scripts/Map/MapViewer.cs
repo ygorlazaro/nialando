@@ -26,7 +26,7 @@ public partial class MapViewer : Node2D
         }
         var tex = ImageTexture.CreateFromImage(image);
         sprite.Texture = tex;
-        sprite.Centered = true;
-        sprite.Position = Vector2.Zero;
+        sprite.Centered = false;
+        sprite.Position = new Vector2(0, 0);
     }
 }
