@@ -1,23 +1,26 @@
 using Godot;
-using NiaLando.Application;
 using NiaLando.Simulation;
 using NiaLando.Domain;
+using NiaLando.Game.UI;
 
 namespace NiaLando.Game.Map;
 
 public partial class MapViewer : Node2D
 {
     private Sprite2D? _mapSprite;
+    private GameState? _state;
+    private GameUI? _gameUI;
 
     public override void _Ready()
     {
         _mapSprite = new Sprite2D();
         AddChild(_mapSprite);
+        _gameUI = GetParent().GetNode<GameUI>("CanvasLayer/GameUI");
         
         var generator = new MapGenerator();
         var setup = new SetupGenerator();
-        var state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
-        state = setup.Setup(state, 8);
+        _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
+        _state = setup.Setup(_state, 8);
         
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
         for (int y = 0; y < 512; y++)
@@ -25,7 +28,7 @@ public partial class MapViewer : Node2D
             for (int x = 0; x < 512; x++)
             {
                 int idx = y * 512 + x;
-                ushort provId = state.Map.ProvinceIdRaster.Length > idx ? state.Map.ProvinceIdRaster[idx] : (ushort)0;
+                ushort provId = _state.Map.ProvinceIdRaster.Length > idx ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
                     image.SetPixel(x, y, new Color(0.2f, 0.4f, 0.6f));
                 else
@@ -46,8 +49,22 @@ public partial class MapViewer : Node2D
                 cam.Zoom *= 1.1f;
             else if (mb.ButtonIndex == MouseButton.WheelDown)
                 cam.Zoom *= 0.9f;
+            else if (mb.ButtonIndex == MouseButton.Left)
+            {
+                // Hit testing simples
+                var mousePos = GetGlobalMousePosition();
+                var localPos = (mousePos - _mapSprite!.Position + new Vector2(256, 256));
+                int x = (int)Mathf.Clamp(localPos.X, 0, 511);
+                int y = (int)Mathf.Clamp(localPos.Y, 0, 511);
+                if (_state != null && _state.Map.ProvinceIdRaster.Length > y * 512 + x)
+                {
+                    ushort provId = _state.Map.ProvinceIdRaster[y * 512 + x];
+                    var province = _state.Map.Provinces.Find(p => p.Id.Value == provId);
+                    _gameUI?.ShowProvince(province);
+                }
+            }
         }
-        if (@event is InputEventMouseMotion mm && Input.IsMouseButtonPressed(MouseButton.Left))
+        if (@event is InputEventMouseMotion mm && Input.IsMouseButtonPressed(MouseButton.Middle))
         {
             var cam = GetParent().GetNode<Camera2D>("Camera2D");
             cam.Position -= mm.Relative / cam.Zoom;
