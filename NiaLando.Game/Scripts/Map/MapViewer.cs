@@ -14,21 +14,12 @@ public partial class MapViewer : Node2D
     public override void _Ready()
     {
         _mapSprite = GetNode<Sprite2D>("MapSprite");
-        _gameUI = GetParent().FindChild("GameUI", true, false) as GameUI;
-        if (_gameUI == null) _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
+        _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
         
         var generator = new MapGenerator();
         var setup = new SetupGenerator();
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
-        
-        GD.Print($"[MapViewer] Provincias: {_state.Map.Provinces.Count}, Raster: {_state.Map.ProvinceIdRaster.Length}");
-        int ocean = 0, land = 0;
-        for (int i = 0; i < _state.Map.ProvinceIdRaster.Length; i++)
-        {
-            if (_state.Map.ProvinceIdRaster[i] == 0) ocean++; else land++;
-        }
-        GD.Print($"[MapViewer] Ocean:{ocean} Land:{land}");
         
         var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
         for (int y = 0; y < 512; y++)
@@ -38,17 +29,13 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.08f, 0.38f, 0.82f));
+                    image.SetPixel(x, y, new Color(0.1f, 0.4f, 0.8f));
                 else
-                    image.SetPixel(x, y, new Color(0.62f, 0.82f, 0.38f));
+                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.3f));
             }
         }
         var tex = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = tex;
-        _mapSprite.Visible = true;
-        _mapSprite.Show();
-        _mapSprite.Modulate = new Color(1, 1, 1, 1);
-        _mapSprite.Scale = Vector2.One;
         _mapSprite.Centered = true;
     }
 
@@ -70,11 +57,7 @@ public partial class MapViewer : Node2D
                 if (_state.Map.ProvinceIdRaster.Length > y * 512 + x)
                 {
                     ushort provId = _state.Map.ProvinceIdRaster[y * 512 + x];
-                    if (provId == 0)
-                    {
-                        _gameUI?.ShowProvince(null);
-                        return;
-                    }
+                    if (provId == 0) { _gameUI?.ShowProvince(null); return; }
                     var province = _state.Map.Provinces.Find(p => p.Id.Value == provId);
                     _gameUI?.ShowProvince(province);
                 }
