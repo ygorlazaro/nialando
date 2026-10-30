@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk">
+<Project Sdk="Godot.NET.Sdk/4.7.2">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,21 +9,15 @@
     <RootNamespace>NiaLando.Game</RootNamespace>
     <AssemblyName>NiaLando.Game</AssemblyName>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <EnableDefaultItems>false</EnableDefaultItems>
-    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <EnableDefaultResourceItems>false</EnableDefaultResourceItems>
+    <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NiaLando.Application\NiaLando.Application.csproj" />
+    <ProjectReference Include="..\src\NiaLando.Application\NiaLando.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Scripts\Root\GameRoot.cs" />
-    <Compile Include="Scripts\UI\TitleScreen.cs" />
-    <Compile Include="Scripts\Map\MapViewer.cs" />
-    <Compile Include="Scripts\Map\MapTileShader.cs" />
+    <Compile Include="Scripts\**\*.cs" />
   </ItemGroup>
 
 </Project>

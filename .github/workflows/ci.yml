@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, reboot ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build
+        run: dotnet build NiaLando.sln -warnaserror
+      - name: Test
+        run: dotnet test NiaLando.sln -warnaserror --no-build
+      - name: Setup Godot
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_mono_linux_x86_64.zip
+          unzip -q Godot_v4.7.2-stable_mono_linux_x86_64.zip
+          mv Godot_v4.7.2-stable_mono_linux_x86_64/godot* ./godot-mono
+          chmod +x ./godot-mono
+      - name: Build Godot project
+        run: ./godot-mono --headless --path NiaLando.Game --build-solutions --quit

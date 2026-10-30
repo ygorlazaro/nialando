@@ -1,0 +1,23 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+;   list=[list values] ; Instead of other style put list values
+;   comments ; are not supported but can be added
+;   version=0 ; for internal tests
+
+config_version=5
+
+[application]
+
+config/name="Nia Lando: Glavo kaj Sigelo"
+run/main_scene="res://Scenes/TitleScreen.tscn"
+config/features=PackedStringArray("4.7", "C#")
+config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="NiaLando.Game"
