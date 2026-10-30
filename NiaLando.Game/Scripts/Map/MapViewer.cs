@@ -13,6 +13,7 @@ public partial class MapViewer : Node2D
 
     public override void _Ready()
     {
+        GD.Print("=== MapViewer._Ready START ===");
         _mapSprite = GetNode<Sprite2D>("MapSprite");
         _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
         
@@ -21,7 +22,10 @@ public partial class MapViewer : Node2D
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
         
-        var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgb8);
+        GD.Print($"Provincias: {_state.Map.Provinces.Count}");
+        
+        var image = Image.CreateEmpty(512, 512, false, Image.Format.Rgba8);
+        int landCount = 0;
         for (int y = 0; y < 512; y++)
         {
             for (int x = 0; x < 512; x++)
@@ -29,15 +33,21 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.1f, 0.45f, 0.85f));
+                    image.SetPixel(x, y, new Color(0.0f, 0.3f, 0.9f, 1.0f));
                 else
-                    image.SetPixel(x, y, new Color(0.65f, 0.85f, 0.4f));
+                {
+                    landCount++;
+                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.4f, 1.0f));
+                }
             }
         }
+        GD.Print($"Land pixels: {landCount}");
         var tex = ImageTexture.CreateFromImage(image);
         _mapSprite.Texture = tex;
         _mapSprite.Centered = true;
-        _mapSprite.Scale = new Vector2(1, 1);
+        _mapSprite.Visible = true;
+        GD.Print($"Texture set: {_mapSprite.Texture != null}");
+        GD.Print("=== MapViewer._Ready END ===");
     }
 
     public override void _Input(InputEvent @event)
