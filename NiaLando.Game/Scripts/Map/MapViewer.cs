@@ -7,21 +7,22 @@ namespace NiaLando.Game.Map;
 
 public partial class MapViewer : Node2D
 {
-    private Sprite2D? _mapSprite;
-    private GameState? _state;
+    private Sprite2D _mapSprite = null!;
+    private GameState _state = null!;
     private GameUI? _gameUI;
 
     public override void _Ready()
     {
         _mapSprite = GetNode<Sprite2D>("MapSprite");
-        _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
+        _gameUI = GetParent().FindChild("GameUI", true, false) as GameUI;
+        if (_gameUI == null) _gameUI = GetParent().GetNodeOrNull<GameUI>("CanvasLayer/GameUI");
         
         var generator = new MapGenerator();
         var setup = new SetupGenerator();
         _state = generator.Generate(new MapParams { Seed = 12345, NumProvinciasAlvo = 200 });
         _state = setup.Setup(_state, 8);
         
-        GD.Print($"[MapViewer] Provincias: {_state.Map.Provinces.Count}");
+        GD.Print($"[MapViewer] Provincias: {_state.Map.Provinces.Count}, Raster: {_state.Map.ProvinceIdRaster.Length}");
         int ocean = 0, land = 0;
         for (int i = 0; i < _state.Map.ProvinceIdRaster.Length; i++)
         {
@@ -37,15 +38,18 @@ public partial class MapViewer : Node2D
                 int idx = y * 512 + x;
                 ushort provId = idx < _state.Map.ProvinceIdRaster.Length ? _state.Map.ProvinceIdRaster[idx] : (ushort)0;
                 if (provId == 0)
-                    image.SetPixel(x, y, new Color(0.1f, 0.4f, 0.8f));
+                    image.SetPixel(x, y, new Color(0.08f, 0.38f, 0.82f));
                 else
-                    image.SetPixel(x, y, new Color(0.6f, 0.8f, 0.3f));
+                    image.SetPixel(x, y, new Color(0.62f, 0.82f, 0.38f));
             }
         }
-        var texture = ImageTexture.CreateFromImage(image);
-        _mapSprite.Texture = texture;
+        var tex = ImageTexture.CreateFromImage(image);
+        _mapSprite.Texture = tex;
         _mapSprite.Visible = true;
-        _mapSprite.Modulate = Colors.White;
+        _mapSprite.Show();
+        _mapSprite.Modulate = new Color(1, 1, 1, 1);
+        _mapSprite.Scale = Vector2.One;
+        _mapSprite.Centered = true;
     }
 
     public override void _Input(InputEvent @event)
@@ -57,13 +61,13 @@ public partial class MapViewer : Node2D
                 cam.Zoom *= 1.1f;
             else if (mb.ButtonIndex == MouseButton.WheelDown)
                 cam.Zoom *= 0.9f;
-            else if (mb.ButtonIndex == MouseButton.Left && _mapSprite != null && _mapSprite.Texture != null)
+            else if (mb.ButtonIndex == MouseButton.Left)
             {
                 var mousePos = GetGlobalMousePosition();
                 var localPos = mousePos - _mapSprite.GlobalPosition + new Vector2(256, 256);
                 int x = (int)Mathf.Clamp(localPos.X, 0, 511);
                 int y = (int)Mathf.Clamp(localPos.Y, 0, 511);
-                if (_state != null && _state.Map.ProvinceIdRaster.Length > y * 512 + x)
+                if (_state.Map.ProvinceIdRaster.Length > y * 512 + x)
                 {
                     ushort provId = _state.Map.ProvinceIdRaster[y * 512 + x];
                     if (provId == 0)
