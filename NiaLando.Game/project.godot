@@ -5,9 +5,6 @@
 ; Format:
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
-;   list=[list values] ; Instead of other style put list values
-;   comments ; are not supported but can be added
-;   version=0 ; for internal tests
 
 config_version=5
 
