@@ -8,6 +8,7 @@ public partial class MapViewer : Node2D
 {
     public override void _Ready()
     {
+        GD.Print("START");
         var sprite = new Sprite2D();
         AddChild(sprite);
         var generator = new MapGenerator();
@@ -18,13 +19,13 @@ public partial class MapViewer : Node2D
             for (int x = 0; x < 512; x++)
             {
                 if (state.Map.ProvinceIdRaster[y * 512 + x] == 0)
-                    image.SetPixel(x, y, new Color(0, 0, 1));
+                    image.SetPixel(x, y, Colors.Blue);
                 else
-                    image.SetPixel(x, y, new Color(0, 1, 0));
+                    image.SetPixel(x, y, Colors.Green);
             }
         }
         sprite.Texture = ImageTexture.CreateFromImage(image);
         sprite.Centered = true;
-        sprite.Position = new Vector2(256, 256);
+        GD.Print("DONE");
     }
 }
