@@ -22,7 +22,9 @@ public partial class MapViewer : Node2D
                     image.SetPixel(x, y, new Color(0, 1, 0));
             }
         }
-        sprite.Texture = ImageTexture.CreateFromImage(image);
+        var tex = ImageTexture.CreateFromImage(image);
+        sprite.Texture = tex;
         sprite.Centered = false;
+        GD.Print("MAP OK");
     }
 }
